@@ -36,20 +36,6 @@ function DataProvider( {children} ) {
         }
     }
 
-    const fetchProducts = async () => {
-        try {
-            const response = await ProductsApi.get('/products');
-            setProducts(response.data);
-            setShops(getShops(response.data));
-        }
-        catch (err) {
-            setError(err);
-        }
-        finally {
-            setIsLoading(false);
-        }
-    }
-
     const getShops = (productsList) => {
         const shops = productsList.map(product => product.shop);
         return shops.filter((shop, index) => shops.indexOf(shop) === index);
@@ -72,6 +58,20 @@ function DataProvider( {children} ) {
     }
 
     useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await ProductsApi.get('/products');
+                setProducts(response.data);
+                setShops(getShops(response.data));
+            }
+            catch (err) {
+                setError(err);
+            }
+            finally {
+                setIsLoading(false);
+            }
+        }
+    
         fetchProducts();
     }, [])
 
