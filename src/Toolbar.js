@@ -8,7 +8,7 @@ function Toolbar() {
 
     const submitProduct = async(e) => {
         e.preventDefault();
-        await addProduct(shop, name);
+        await addProduct(shop.toUpperCase(), name.toUpperCase());
         setName('');
     }
     return (
