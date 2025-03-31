@@ -11,7 +11,8 @@ function DataProvider( {children} ) {
 
     const addProduct = async(shop, name) => {
         try {
-            const response = await ProductsApi.post('/products', { name, shop });
+            const response = await ProductsApi.post('/products',
+                { name: name.toUpperCase(), shop: shop.toUpperCase() });
             const newProducts = [...products, response.data];
             setProducts(newProducts);
             if (shops.indexOf(shop) < 0) {
