@@ -11,7 +11,7 @@ function CreateProduct() {
     useEffect(() => {
         setDescription('');
         setName('');
-    }, []);
+    }, [setDescription, setName]);
 
     const submitProduct = async(e) => {
         e.preventDefault();

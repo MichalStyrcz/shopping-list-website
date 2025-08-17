@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { DataContext } from './DataContext'
 
 function Products() {
-    const { deleteProduct, products, selectedId, selectProduct, shops, toggleProduct } = useContext(DataContext);
+    const { products, selectedId, selectProduct, shops, toggleProduct } = useContext(DataContext);
 
     return (
         (
