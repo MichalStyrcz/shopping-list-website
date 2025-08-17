@@ -4,18 +4,24 @@ import ProductsApi from './api';
 const DataContext = createContext();
 
 function DataProvider( {children} ) {
+    const [description, setDescription] = useState('');
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [name, setName] = useState('');
     const [products, setProducts] = useState([]);
+    const [selectedId, setSelectedId] = useState(0);
+    const [shop, setShop] = useState('');
     const [shops, setShops] = useState([]);
 
-    const addProduct = async(shop, name) => {
+    const addProduct = async(shop, name, description) => {
         try {
-            const response = await ProductsApi.post('/products', { name, shop });
+            const response = await ProductsApi.post('/products', { description, name,
+                shop });
             const newProducts = [...products, response.data];
             setProducts(newProducts);
             if (shops.indexOf(shop) < 0) {
                 const newShops = [...shops, shop];
+                setSelectedId(0);
                 setShops(newShops);
             }
                 
@@ -29,6 +35,7 @@ function DataProvider( {children} ) {
         try {
             await ProductsApi.delete(`/products/${id}`);
             const newProducts = products.filter(product => product.id !== id);
+            setSelectedId(0);
             setProducts(newProducts);
         }
         catch(err) {
@@ -41,6 +48,20 @@ function DataProvider( {children} ) {
         return shops.filter((shop, index) => shops.indexOf(shop) === index);
     };
 
+    const selectProduct = (product) => {
+        if (product.id === selectedId) {
+            setDescription('');
+            setName('');
+            setSelectedId(0);
+        }
+        else {
+            setDescription(product.description);
+            setName(product.name);
+            setSelectedId(product.id);
+            setShop(product.shop);
+        }
+    }
+
     const toggleProduct = async (id) => {
         try {
             const existingProduct = products.find(product => product.id === id);
@@ -51,6 +72,29 @@ function DataProvider( {children} ) {
                     shop: existingProduct.shop
                 });
                 setProducts(products.map(product => (product.id === id) ? {...product, handled: !product.handled} : product));
+            }
+        } catch(err) {
+            setError(err);
+        }
+    }
+
+    const updateProduct = async (id, shop, name, description) => {
+        try {
+            const existingProduct = products.find(product => product.id === id);
+            if (existingProduct) {
+                await ProductsApi.put(`/products/${id}`, {
+                    description,
+                    handled: existingProduct.handled,
+                    name,
+                    shop
+                });
+                setSelectedId(0);
+                setProducts(products.map(product => (product.id === id) ? {...product, description, name, shop} : product));
+                if (shops.indexOf(shop) < 0) {
+                    const newShops = [...shops, shop];
+                    setSelectedId(0);
+                    setShops(newShops);
+                }
             }
         } catch(err) {
             setError(err);
@@ -80,11 +124,21 @@ function DataProvider( {children} ) {
             value={{
                 addProduct,
                 deleteProduct,
+                description,
                 error,
                 isLoading,
+                name,
                 products,
+                selectProduct,
+                selectedId,
+                setDescription,
+                setName,
+                setSelectedId,
+                setShop,
+                shop,
                 shops,
-                toggleProduct
+                toggleProduct,
+                updateProduct
             }}
         >
             {children}

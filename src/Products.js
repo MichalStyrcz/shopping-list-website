@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { DataContext } from './DataContext'
 
 function Products() {
-    const { deleteProduct, products, shops, toggleProduct } = useContext(DataContext);
+    const { deleteProduct, products, selectedId, selectProduct, shops, toggleProduct } = useContext(DataContext);
 
     return (
         (
@@ -14,10 +14,11 @@ function Products() {
                             <ul>
                                 {
                                     products.filter(product => product.shop === shop).map(product => (
-                                        <li key={product.id}>
+                                        <li className='product-item' key={product.id} onClick={(e) => {
+                                            selectProduct(product);
+                                            }} style={product.id === selectedId ? {backgroundColor:"blue", color:"white"} : {}}>
                                             <input type='checkbox' checked={product.handled} onChange={async() => await toggleProduct(product.id)} />
-                                            <label>{product.name}</label>
-                                            <button onClick={async () => await deleteProduct(product.id)}>Usuń</button>
+                                            <label>{product.name} ({product.description})</label>
                                         </li>
                                     ))
                                 }

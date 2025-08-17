@@ -1,36 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { DataContext } from "./DataContext";
 
 function Toolbar() {
-    const { addProduct } = useContext(DataContext);
-    const [name, setName] = useState('');
-    const [shop, setShop] = useState('');
-
-    const submitProduct = async(e) => {
-        e.preventDefault();
-        await addProduct(shop.toUpperCase(), name.toUpperCase());
-        setName('');
-    }
+    const { selectedId } = useContext(DataContext);
     return (
-        <form className='Toolbar' id='toolbarForm' onSubmit={ (e) => submitProduct(e) }>
-            <label htmlFor='shop'>Sklep:</label>
-            <input
-                id='shop'
-                onChange={ (e) => setShop(e.target.value) }
-                placeholder='Sklep'
-                required
-                type='text'
-                value={ shop } />
-            <label htmlFor='name'>Produkt:</label>
-            <input
-                id='name'
-                onChange={ (e) => setName(e.target.value) }
-                placeholder='Produkt'
-                required
-                type='text'
-                value={ name }/>
-            <button type='submit'>Dodaj</button>
-        </form>
+        <div className="Toolbar">
+            <button><Link to="/product-new">Dodaj produkt</Link></button>
+            { selectedId > 0 && (
+                <>
+                    <button><Link to="/product-edit">Edytuj produkt</Link></button>
+                    <button><Link to="/product-delete">Usuń produkt</Link></button>
+                </>
+            )}
+        </div>
     )
 }
 
